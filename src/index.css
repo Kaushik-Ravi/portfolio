@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* For the modal scrollbar */
+  .modal-scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .modal-scrollbar::-webkit-scrollbar-track {
+    background: #0f172a; /* slate-900 */
+  }
+
+  .modal-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #475569; /* slate-600 */
+    border-radius: 6px;
+    border: 2px solid #0f172a; /* slate-900 */
+  }
+  
+  .modal-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #64748b; /* slate-500 */
+  }
+
+  /* Keynote-style presentation blocks for the modal */
+  .keynote-section {
+    @apply min-h-screen flex flex-col justify-center items-center py-20 lg:py-24;
+    scroll-snap-align: start;
+  }
+
+  .keynote-title {
+    @apply text-4xl sm:text-5xl lg:text-6xl font-serif text-slate-100 font-medium mb-4;
+  }
+
+  .keynote-subtitle {
+    @apply text-lg sm:text-xl lg:text-2xl text-amber-400 max-w-3xl mx-auto;
+  }
+  
+  .keynote-body {
+    @apply text-base sm:text-lg text-slate-300 max-w-3xl mx-auto mt-6 leading-relaxed;
+  }
+  
+  .keynote-media-wrapper {
+    @apply w-full aspect-video bg-slate-950 border border-slate-800 rounded-lg shadow-2xl overflow-hidden;
+  }
+  
+  /* Responsive wrapper for video embeds */
+  .responsive-video-wrapper {
+    @apply relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+  }
+
+  .responsive-video-wrapper iframe {
+    @apply absolute top-0 left-0 w-full h-full;
+  }
+
+  /* Image Comparison Slider */
+  .comparison-slider {
+    @apply relative w-full aspect-video select-none cursor-ew-resize keynote-media-wrapper overflow-hidden;
+  }
+
+  .comparison-image {
+      @apply absolute w-full h-full top-0 left-0 object-cover pointer-events-none;
+  }
+
+  .comparison-after-wrapper {
+      @apply absolute w-full h-full top-0 left-0;
+  }
+
+  .comparison-handle {
+      @apply absolute top-0 bottom-0 w-1.5 -ml-[3px] flex flex-col items-center justify-center cursor-ew-resize;
+  }
+
+  .comparison-handle-line {
+      @apply w-0.5 grow bg-white/50;
+  }
+
+  .comparison-handle-icon {
+      @apply text-slate-900 bg-white/90 backdrop-blur-sm rounded-full p-2 my-2 transition-transform duration-200;
+      transform: scale(1);
+  }
+
+  .comparison-slider:hover .comparison-handle-icon {
+      transform: scale(1.1);
+  }
+
+  /* --- Civic Impact Card Gradient --- */
+  .civic-card-gradient {
+    @apply absolute inset-0;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0));
+  }
+
+  /* --- Civic Project Modal Styles --- */
+  .civic-modal-content {
+    @apply max-h-[90vh] overflow-y-auto modal-scrollbar;
+    animation: fadeInScale 0.3s ease-out forwards;
+  }
+  
+  .civic-modal-overlay {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* --- Timeline Styles for Accolades --- */
+  .timeline-spine {
+    @apply absolute left-4 lg:left-1/2 w-0.5 h-full bg-slate-700 -translate-x-1/2;
+  }
+
+  .timeline-entry {
+    @apply relative flex flex-col mb-12;
+  }
+  
+  .timeline-entry::after {
+    @apply content-[''] absolute top-1 left-4 lg:left-1/2 w-4 h-4 bg-slate-600 border-4 border-slate-900 rounded-full -translate-x-1/2;
+  }
+
+  .timeline-content-container {
+      @apply w-full lg:w-1/2 pl-12 lg:pl-0;
+  }
+  
+  .timeline-year {
+      @apply text-amber-500 font-semibold mb-1 text-lg;
+  }
+
+  .timeline-title {
+      @apply text-xl font-serif text-slate-100;
+  }
+
+  .timeline-institution {
+      @apply text-slate-400 text-base mt-1;
+  }
+  
+  .timeline-description {
+      @apply text-slate-500 text-sm mt-2 italic leading-relaxed;
+  }
+
+  /* --- Navigation Styles --- */
+  .nav-link {
+    @apply text-slate-400 hover:text-slate-200 transition-colors text-sm;
+  }
+  .nav-dropdown {
+    @apply absolute top-full left-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-md shadow-lg py-1
+           opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300;
+  }
+  .nav-dropdown-link {
+    @apply block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-700;
+  }
+}
