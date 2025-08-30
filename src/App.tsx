@@ -580,6 +580,8 @@ function App() {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [activeCivicProject, setActiveCivicProject] = useState<CivicProject | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [expandedRole, setExpandedRole] = useState<number | null>(null);
+
 
   const scrollToSection = (sectionId: string) => {
     setIsMobileMenuOpen(false);
@@ -743,9 +745,12 @@ function App() {
                     <div className="text-xl sm:text-2xl font-semibold text-amber-500 mb-1">13.9°C</div>
                     <div className="text-xs sm:text-sm text-slate-400">Maximum cooling potential identified via Tree Archetype analysis</div>
                   </div>
+                  <div className="mt-6 md:hidden">
+                    <div className="inline-block px-4 py-2 border border-slate-200 text-slate-200 font-medium text-sm rounded-md">View Project</div>
+                  </div>
                 </div>
               </div>
-              <div className="absolute inset-0 bg-slate-900/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-lg">
+              <div className="absolute inset-0 bg-slate-900/70 opacity-0 group-hover:opacity-100 md:flex items-center justify-center transition-opacity duration-300 rounded-lg hidden">
                 <span className="px-6 py-3 border-2 border-slate-200 text-slate-200 font-medium text-lg">View Project</span>
               </div>
             </div>
@@ -780,9 +785,12 @@ function App() {
                     <div className="text-xl sm:text-2xl font-semibold text-amber-500 mb-1">3,211 kg</div>
                     <div className="text-xs sm:text-sm text-slate-400">CO₂e sequestered by a single tree, calculated via the end-to-end pipeline</div>
                   </div>
+                   <div className="mt-6 md:hidden">
+                    <div className="inline-block px-4 py-2 border border-slate-200 text-slate-200 font-medium text-sm rounded-md">View Project</div>
+                  </div>
                 </div>
               </div>
-              <div className="absolute inset-0 bg-slate-900/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-lg">
+              <div className="absolute inset-0 bg-slate-900/70 opacity-0 group-hover:opacity-100 md:flex items-center justify-center transition-opacity duration-300 rounded-lg hidden">
                 <span className="px-6 py-3 border-2 border-slate-200 text-slate-200 font-medium text-lg">View Project</span>
               </div>
             </div>
@@ -817,9 +825,12 @@ function App() {
                     <div className="text-xl sm:text-2xl font-semibold text-amber-500 mb-1">AI-Generated Guidance</div>
                     <div className="text-xs sm:text-sm text-slate-400">Generates a unique, guided walking meditation with a real-time AI pipeline using the Gemini API.</div>
                   </div>
+                   <div className="mt-6 md:hidden">
+                    <div className="inline-block px-4 py-2 border border-slate-200 text-slate-200 font-medium text-sm rounded-md">View Project</div>
+                  </div>
                 </div>
               </div>
-              <div className="absolute inset-0 bg-slate-900/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-lg">
+              <div className="absolute inset-0 bg-slate-900/70 opacity-0 group-hover:opacity-100 md:flex items-center justify-center transition-opacity duration-300 rounded-lg hidden">
                 <span className="px-6 py-3 border-2 border-slate-200 text-slate-200 font-medium text-lg">View Project</span>
               </div>
             </div>
@@ -854,9 +865,12 @@ function App() {
                     <div className="text-xl sm:text-2xl font-semibold text-amber-500 mb-1">1.48°C</div>
                     <div className="text-xs sm:text-sm text-slate-400">Average temperature reduction measured in high-density urban forest areas</div>
                   </div>
+                  <div className="mt-6 md:hidden">
+                    <div className="inline-block px-4 py-2 border border-slate-200 text-slate-200 font-medium text-sm rounded-md">View Project</div>
+                  </div>
                 </div>
               </div>
-              <div className="absolute inset-0 bg-slate-900/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-lg">
+              <div className="absolute inset-0 bg-slate-900/70 opacity-0 group-hover:opacity-100 md:flex items-center justify-center transition-opacity duration-300 rounded-lg hidden">
                 <span className="px-6 py-3 border-2 border-slate-200 text-slate-200 font-medium text-lg">View Project</span>
               </div>
             </div>
@@ -877,9 +891,12 @@ function App() {
                   <img src={project.image} alt={project.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   <div className="absolute inset-0 civic-card-gradient"></div>
                   <div className="relative h-full flex flex-col justify-end p-6">
-                    <h3 className="text-xl font-serif text-slate-100 mb-1">{project.title}</h3>
+                    <h3 className="text-xl font-serif text-slate-100">{project.title}</h3>
+                    <div className="mt-4 md:hidden">
+                        <div className="inline-block px-4 py-2 border border-slate-200 text-slate-200 font-medium text-sm rounded-md">View Details</div>
+                    </div>
                   </div>
-                  <div className="absolute inset-0 bg-slate-900/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute inset-0 bg-slate-900/70 hidden md:flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <span className="px-6 py-3 border-2 border-slate-200 text-slate-200 font-medium text-lg">View Details</span>
                   </div>
                 </article>
@@ -960,20 +977,25 @@ function App() {
                         </div>
                     </div>
                 </div>
-                 <div className="group">
+                 <div>
                     <h3 className="text-xl font-serif text-slate-200 mb-6">Leadership & Advisory Roles</h3>
                     <div className="space-y-8">
                         {LEADERSHIP_ROLES_DATA.map((role, index) => (
-                            <div key={index} className="flex items-start group/item">
+                            <div key={index} className="flex items-start group/item md:cursor-pointer" onClick={() => setExpandedRole(expandedRole === index ? null : index)}>
                                 <div className="flex-shrink-0">
                                     <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 overflow-hidden">
                                         <img src={role.logo} alt={`${role.organization} logo`} className="h-full w-full object-cover"/>
                                     </div>
                                 </div>
-                                <div className="ml-4">
-                                    <p className="font-semibold text-slate-100">{role.role}</p>
-                                    <p className="text-amber-500 text-sm">{role.organization}</p>
-                                    <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-0 group-hover/item:max-h-48">
+                                <div className="ml-4 flex-1">
+                                    <div className="flex items-center justify-between">
+                                      <div>
+                                        <p className="font-semibold text-slate-100">{role.role}</p>
+                                        <p className="text-amber-500 text-sm">{role.organization}</p>
+                                      </div>
+                                      <ChevronDown size={20} className={`text-slate-500 md:hidden transition-transform duration-300 ${expandedRole === index ? 'rotate-180' : ''}`} />
+                                    </div>
+                                    <div className={`overflow-hidden transition-all duration-500 ease-in-out md:max-h-0 md:group-hover/item:max-h-48 ${expandedRole === index ? 'max-h-48' : 'max-h-0'}`}>
                                       <p className="text-slate-400 text-sm mt-2 leading-relaxed">{role.description}</p>
                                     </div>
                                 </div>
