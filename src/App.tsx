@@ -61,6 +61,57 @@ interface LeadershipRole {
 
 const PROJECTS_DATA: Project[] = [
   {
+    id: 'sensepath',
+    title: 'SensePath: The Nervous System for Our Roads',
+    intro: "What if our roads could speak? I architected SensePath, a platform that transforms any vehicle into an intelligent road sensor, creating a living, learning, and self-improving map of our physical infrastructure. It's a system that doesn't just show the path; it communicates the feeling of the path.",
+    sections: [
+      {
+        title: 'From Chaos to Clarity',
+        question: "How do you transform the chaotic, noisy data from a tumbling smartphone into a stable, objective measure of the road?",
+        answer: "The solution begins with first-principles physics. The SensePath intelligence engine computationally establishes a stable, vehicle-centric frame of reference for every single data point, making the entire system immune to the phone's orientation.",
+        capabilities: [
+            { title: "Gravity as the Anchor", description: "A low-pass Butterworth filter isolates the constant vector of gravity from raw accelerometer data, providing a true vertical anchor for all calculations." },
+            { title: "Dynamic Frame of Reference", description: "Real-time vector projections establish a stable `Vertical`, `Forward`, and `Lateral` axis locked to the vehicle, not the phone." },
+            { title: "Orientation-Invariant Analysis", description: "Ensures every pothole and undulation is measured with scientific objectivity, whether the phone is mounted, in a pocket, or on a seat." }
+        ],
+        media: { type: 'video', src: 'https://www.youtube.com/embed/uAtk-3Ku_30', alt: 'Placeholder for Physics Engine GIF' }
+      },
+      {
+        title: 'A Universal Translator',
+        question: "How can a system tell the difference between a phone \"screaming\" with vibrations in a handlebar mount and one \"muttering\" in a cushioned pocket?",
+        answer: "This is where raw physics fails and true intelligence begins. The system uses dynamic Calibration Profiles: an \"AI hearing aid\" that learns the unique sonic signature of each context and computationally normalizes it.",
+        capabilities: [
+            { title: "Intelligent Normalization", description: "Applies learned scaling factors to raw sensor signals, effectively transforming the \"scream\" of a holder so it sounds just like the \"mutter\" of a pocket." },
+            { title: "Universal Detection Logic", description: "Allows a single, universal set of event-detection algorithms to work with high fidelity across all vehicle types and phone placements." },
+            { title: "Kinematic State Profiling", description: "Distinguishes between road-induced events and driver actions like braking by identifying the vehicle's kinematic state, eliminating a major class of false positives." }
+        ],
+        media: { type: 'video', src: 'https://www.youtube.com/embed/MFs-Nsxpbh8', alt: 'Placeholder for Context Engine GIF' }
+      },
+      {
+        title: 'The Learning Loop',
+        question: "How does a system learn to trust one context over another and continuously improve its own accuracy with every single drive?",
+        answer: "The engine learns directly from its most trusted source: the user. A two-pillar, community-driven feedback system creates a virtuous cycle where every piece of user input makes the entire platform smarter.",
+        capabilities: [
+            { title: "Golden Set Calibration", description: "Prompts users to identify the most accurate of two overlapping drives, triggering a high-precision spatial match in the backend to automatically generate or refine a Calibration Profile." },
+            { title: "Guided AI Correction", description: "Empowers users to correct the AI by drawing precise polygons on the map and providing granular feedback, which is used to fine-tune the system's long-term learning models." },
+            { title: "Relational Memory", description: "A dedicated `calibration_pairs` table ensures the system never asks the same question twice, creating an intelligent and respectful user experience." }
+        ],
+        media: { type: 'video', src: 'https://www.youtube.com/embed/4jGpN9t1L3g', alt: 'Placeholder for Learning Loop GIF' }
+      },
+      {
+        title: 'The Command Center',
+        question: "How do you manage this immense computational load, processing millions of data points per drive, without sacrificing the user experience?",
+        answer: "The platform was architected from the ground up as a fully asynchronous, self-contained system. The front-end user experience is now completely decoupled from the back-end intelligence engine, creating a seamless and instantaneous interface.",
+        capabilities: [
+            { title: "Instantaneous Uploads", description: "The API queues tasks in the database and returns an immediate success response, allowing users to continue working without waiting for processing to complete." },
+            { title: "Live Status Monitoring", description: "The UI automatically polls a status endpoint, providing clear \"Processing...\" and \"Recalibrating...\" feedback and refreshing data the moment a task is finished." },
+            { title: "Autonomous Background Worker", description: "An integrated worker thread continuously processes tasks from the database queue, creating a robust, scalable, and fully autonomous learning system." }
+        ],
+        media: { type: 'video', src: 'https://www.youtube.com/embed/m-EUFk3oWNg', alt: 'Placeholder for Architecture GIF' }
+      }
+    ]
+  },
+  {
     id: 'pune-dashboard',
     title: 'Pune Urban Tree Intelligence',
     intro: 'The blueprint for a climate-resilient city. A revolutionary platform that transforms millions of data points into a clear, compelling vision for a cooler, greener, more resilient Pune.',
@@ -582,6 +633,16 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedRole, setExpandedRole] = useState<number | null>(null);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const projectId = params.get('project');
+    if (projectId) {
+      const projectToShow = PROJECTS_DATA.find(p => p.id === projectId);
+      if (projectToShow) {
+        setActiveProject(projectToShow);
+      }
+    }
+  }, []); // This empty array ensures the effect runs only once when the app loads
 
   const scrollToSection = (sectionId: string) => {
     setIsMobileMenuOpen(false);
@@ -680,11 +741,14 @@ function App() {
         <section id="hero" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-slate-100 mb-4 font-normal leading-tight">Kaushik Ravi</h1>
-            <h2 className="text-lg sm:text-xl lg:text-2xl font-serif text-slate-300 mb-6 sm:mb-8 font-normal leading-relaxed">Computational Urban Ecologist & Civic Technologist</h2>
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-serif text-slate-300 mb-6 sm:mb-8 font-normal leading-relaxed">Civic Technologist & Urban Systems Researcher</h2>
             
             <div className="prose prose-base sm:prose-lg max-w-none text-slate-300 mb-8 sm:mb-12 leading-relaxed">
+              <p className="mb-4 sm:mb-6">
+                My research confronts the critical gap between our cities' complex infrastructure and the citizens who inhabit them. I architect <strong>computational sensory systems</strong> that make invisible urban dynamics tangible. By fusing signals from everyday technology, from the vibrations of a road to the thermal signature of a tree canopy, my frameworks translate raw data into high-fidelity, actionable intelligence.                             
+              </p>
               <p>
-                My research confronts a critical paralysis in urban climate action: the gap between citizen agency and the hyperlocal intelligence needed to enact change. I architect a full-stack framework that fuses civic technologies, from AI-powered photogrammetry to custom ETL pipelines, to process and activate hyperlocal data. This system translates raw data into quantifiable metrics for Nature-based Solutions, such as per-tree carbon sequestration and up to 13.9°C of localized cooling potential. This work moves beyond mere monitoring to create a feedback loop where data empowers action, catalyzing a shift from passive urban habitation to active ecological co-creation.
+                This work moves beyond passive monitoring to create a direct feedback loop between people and place. It empowers communities with quantifiable metrics, such as a <strong>13.9°C localized cooling potential</strong> from urban trees or the precise location of infrastructure decay, catalyzing a shift from passive habitation to the active, data-informed co-creation of more resilient and responsive urban ecosystems.  
               </p>
             </div>
 
@@ -715,20 +779,60 @@ function App() {
               A selection of self-directed projects demonstrating an end-to-end methodology, from large-scale data analysis to the development of tools for citizen-led data collection and real-world application.
             </p>
 
-            {/* Project 1: Pune Dashboard */}
+            {/* Project 1: SensePath */}
+             <div 
+              onClick={() => setActiveProject(PROJECTS_DATA.find(p => p.id === 'sensepath')!)}
+              className="group relative cursor-pointer mb-12 sm:mb-16 lg:mb-20"
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                <div className="order-2 lg:order-1">
+                  <img 
+                    src="/images/Product 4 Title Image.png"
+                    alt="Abstract visualization of a data network" 
+                    className="w-full rounded-lg border border-slate-700 aspect-video object-cover"
+                  />
+                </div>
+                <div className="order-1 lg:order-2">
+                  <div className="text-xs uppercase tracking-wider text-amber-500 mb-2 sm:mb-3">Civic Technology</div>
+                  <h3 className="text-xl sm:text-2xl font-serif text-slate-100 mb-3 sm:mb-4">SensePath: A Nervous System for Our Roads</h3>
+                  <p className="text-slate-400 mb-4 sm:mb-6 leading-relaxed">
+                    This platform transforms the smartphone in every pocket into a high-fidelity road sensor, creating a living, self-improving map of our physical infrastructure. The system is built on a fully asynchronous architecture and a dual-stage intelligence engine: a real-time physics core for orientation-invariant analysis, and an adaptive learning model that normalizes data from any context, enabling universal, high-fidelity insight.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
+                    {['Real-Time Physics Engine', 'Orientation-Invariant Sensing', 'Asynchronous Architecture', 'Self-Improving AI'].map((tag) => (
+                      <span key={tag} className="px-2 sm:px-3 py-1 bg-slate-800 text-slate-300 text-xs sm:text-sm rounded-full">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="bg-slate-800/50 p-4 rounded-lg">
+                    <div className="text-xl sm:text-2xl font-semibold text-amber-500 mb-1">The Universal Translator</div>
+                    <div className="text-xs sm:text-sm text-slate-400">An adaptive AI that learns the unique signature of any phone placement and normalizes it for universal accuracy.</div>
+                  </div>
+                  <div className="mt-6 md:hidden">
+                    <div className="inline-block px-4 py-2 border border-slate-200 text-slate-200 font-medium text-sm rounded-md">View Project</div>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute inset-0 bg-slate-900/70 opacity-0 group-hover:opacity-100 md:flex items-center justify-center transition-opacity duration-300 rounded-lg hidden">
+                <span className="px-6 py-3 border-2 border-slate-200 text-slate-200 font-medium text-lg">View Project</span>
+              </div>
+            </div>
+
+            {/* Project 2: Pune Dashboard */}
             <div 
               onClick={() => setActiveProject(PROJECTS_DATA.find(p => p.id === 'pune-dashboard')!)}
               className="group relative cursor-pointer mb-12 sm:mb-16 lg:mb-20"
             >
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                <div className="order-2 lg:order-1">
+                <div className="order-1 lg:order-2">
                   <img 
                     src="/images/Product 1 Title Image.jpeg" 
                     alt="Urban Analytics Dashboard Interface" 
                     className="w-full rounded-lg border border-slate-700 aspect-video object-cover"
                   />
                 </div>
-                <div className="order-1 lg:order-2">
+                <div className="order-2 lg:order-1">
                   <div className="text-xs uppercase tracking-wider text-amber-500 mb-2 sm:mb-3">Urban Analytics & Planning</div>
                   <h3 className="text-xl sm:text-2xl font-serif text-slate-100 mb-3 sm:mb-4">Pune Urban Tree Intelligence Dashboard</h3>
                   <p className="text-slate-400 mb-4 sm:mb-6 leading-relaxed">
@@ -755,20 +859,20 @@ function App() {
               </div>
             </div>
 
-            {/* Project 2: TreeFolio */}
+            {/* Project 3: TreeFolio */}
             <div 
               onClick={() => setActiveProject(PROJECTS_DATA.find(p => p.id === 'treefolio')!)}
               className="group relative cursor-pointer mb-12 sm:mb-16 lg:mb-20"
             >
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                <div className="order-1 lg:order-2">
+                <div className="order-2 lg:order-1">
                   <img 
                     src="/images/Product 2 Title Image.png" 
                     alt="Mobile data collection interface" 
                     className="w-full rounded-lg border border-slate-700 aspect-video object-cover"
                   />
                 </div>
-                <div className="order-2 lg:order-1">
+                <div className="order-1 lg:order-2">
                   <div className="text-xs uppercase tracking-wider text-amber-500 mb-2 sm:mb-3">Civic Technology & Data Collection</div>
                   <h3 className="text-xl sm:text-2xl font-serif text-slate-100 mb-3 sm:mb-4">TreeFolio: Citizen-Led Urban Forest Census</h3>
                   <p className="text-slate-400 mb-4 sm:mb-6 leading-relaxed">
@@ -795,20 +899,20 @@ function App() {
               </div>
             </div>
 
-            {/* Project 3: Eco-Path Navigator */}
+            {/* Project 4: Eco-Path Navigator */}
              <div 
               onClick={() => setActiveProject(PROJECTS_DATA.find(p => p.id === 'eco-path-navigator')!)}
               className="group relative cursor-pointer mb-12 sm:mb-16 lg:mb-20"
             >
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                <div className="order-2 lg:order-1">
+                <div className="order-1 lg:order-2">
                   <img 
                     src="/images/Product 3 Title Image.jpeg" 
                     alt="Urban pathway planning visualization" 
                     className="w-full rounded-lg border border-slate-700 aspect-video object-cover"
                   />
                 </div>
-                <div className="order-1 lg:order-2">
+                <div className="order-2 lg:order-1">
                   <div className="text-xs uppercase tracking-wider text-amber-500 mb-2 sm:mb-3">Computational Urbanism</div>
                   <h3 className="text-xl sm:text-2xl font-serif text-slate-100 mb-3 sm:mb-4">Eco-Path Navigator: Climate-Optimized Urban Routing</h3>
                   <p className="text-slate-400 mb-4 sm:mb-6 leading-relaxed">
@@ -825,7 +929,7 @@ function App() {
                     <div className="text-xl sm:text-2xl font-semibold text-amber-500 mb-1">AI-Generated Guidance</div>
                     <div className="text-xs sm:text-sm text-slate-400">Generates a unique, guided walking meditation with a real-time AI pipeline using the Gemini API.</div>
                   </div>
-                   <div className="mt-6 md:hidden">
+                  <div className="mt-6 md:hidden">
                     <div className="inline-block px-4 py-2 border border-slate-200 text-slate-200 font-medium text-sm rounded-md">View Project</div>
                   </div>
                 </div>
@@ -835,20 +939,20 @@ function App() {
               </div>
             </div>
             
-            {/* Project 4: Berlin Case Study */}
+            {/* Project 5: Berlin Case Study */}
             <div 
               onClick={() => setActiveProject(PROJECTS_DATA.find(p => p.id === 'berlin-case-study')!)}
               className="group relative cursor-pointer"
             >
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                <div className="order-1 lg:order-2">
+                <div className="order-2 lg:order-1">
                   <img 
                     src="/images/Product 4 Title Image.jpeg" 
                     alt="Visualization of Berlin's urban forest data" 
                     className="w-full rounded-lg border border-slate-700 aspect-video object-cover"
                   />
                 </div>
-                <div className="order-2 lg:order-1">
+                <div className="order-1 lg:order-2">
                   <div className="text-xs uppercase tracking-wider text-amber-500 mb-2 sm:mb-3">Academic Research & Data Visualization</div>
                   <h3 className="text-xl sm:text-2xl font-serif text-slate-100 mb-3 sm:mb-4">Urban Tree Intelligence: A Berlin Case Study</h3>
                   <p className="text-slate-400 mb-4 sm:mb-6 leading-relaxed">
@@ -1014,10 +1118,10 @@ function App() {
             
             <div className="prose prose-base sm:prose-lg max-w-none text-slate-300 mb-8 sm:mb-12 leading-relaxed">
                <p className="mb-4 sm:mb-6">
-                I am a researcher and civic technologist working at the intersection of urban ecology, computational analysis, and environmental science. My work is driven by a conviction that the most pressing urban challenges require not just new data, but new relationships between data, citizens, and decision-making processes. Through my research, I develop computational frameworks that transform how communities understand and interact with their urban ecosystems.
+                I am a researcher and technologist driven to bridge the gap between the complex, invisible systems that govern our cities and the citizens who inhabit them. My work is grounded in the conviction that the most pressing urban challenges are not just technical, but social; they require new relationships between data, people, and the processes that govern our cities.
               </p>
               <p>
-                My background in urban sustainability, which involved collaborations with local governments and NGOs across multiple continents, revealed a persistent gap between high-level climate policy and hyperlocal implementation. This challenge now defines my research agenda. My approach combines rigorous computational methods with participatory design principles, ensuring that technical solutions serve community needs and democratic values.
+                This focus stems from my background in urban sustainability and on-the-ground civic engagement, which revealed a persistent disconnect between high-level policy and hyperlocal reality. My approach is therefore defined by a synthesis of rigorous computational methods and participatory design, ensuring the systems I build are not only technically robust but also democratically valuable.
               </p>
             </div>
 
