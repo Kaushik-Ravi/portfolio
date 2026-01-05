@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Github, Linkedin, Mail, ExternalLink, FileText, X as CloseIcon, ChevronsLeftRight, CheckCircle, Menu, ChevronDown } from 'lucide-react';
+import { Github, Linkedin, Mail, ExternalLink, FileText, X as CloseIcon, ChevronsLeftRight, CheckCircle, Menu, ChevronDown, ArrowUp, BookOpen } from 'lucide-react';
 
 // --- DATA STRUCTURES & CONTENT ---
 
@@ -35,6 +35,16 @@ interface Publication {
   link: string;
   status: string;
   summary: string;
+}
+
+interface Talk {
+  title: string;
+  event: string;
+  year: string;
+  description: string;
+  videoUrl: string;
+  eventUrl: string;
+  tags?: string[];
 }
 
 interface CivicProject {
@@ -301,6 +311,46 @@ const PROJECTS_DATA: Project[] = [
         media: { type: 'video', src: 'https://www.youtube.com/embed/kbExmZkOcq8', alt: 'A GIF demonstrating the interactive commute visualization, showing real-time data updates.' }
       }
     ]
+  },
+  {
+    id: 'streetlens',
+    title: 'StreetLens: A Digital Street Audit',
+    intro: "What if we could audit the quality of every street in a city without stepping outside? StreetLens is an AI-powered system that transforms Google Street View imagery into a comprehensive infrastructure audit. By combining computer vision with spatial intelligence, it automatically assesses everything from potholes to streetlights, generating a standardized 'Street Quality Score' for any location on the map.",
+    sections: [
+      {
+        title: 'The Virtual Surveyor',
+        question: "How do we scale street audits from manual, boots-on-the-ground surveys to city-wide automated analysis?",
+        answer: "The system acts as a virtual surveyor. Users simply define a start and end point on a map, and StreetLens intelligently samples the route. It calculates the optimal sampling frequency—analyzing a location every 25 meters—and validates Street View coverage in real-time to ensure a complete digital audit trail.",
+        capabilities: [
+          { title: "Adaptive Route Sampling", description: "Automatically calculates geodesic paths and generates sampling points at optimal 25-meter intervals using the Haversine formula." },
+          { title: "Coverage Verification", description: "Instantly queries the Street View Metadata API to validate imagery availability before analysis begins, preventing wasted compute." },
+          { title: "360° Data Capture", description: "Acquires four-directional imagery (N, E, S, W) at every sampling point to ensure no infrastructure element is missed." }
+        ],
+        media: { type: 'image', src: '/images/image (3).png', alt: 'Interactive map interface for coordinate selection' }
+      },
+      {
+        title: 'Multimodal Vision & Intelligence',
+        question: "How do we turn raw street pixels into accurate, deduplicated infrastructure data?",
+        answer: "StreetLens leverages the Gemini 2.5 Flash Vision Language Model to 'see' the street, identifying potholes, wires, and signage with zero-shot learning. As seen in the detection results, the system draws precise bounding boxes around every asset—from streetlights to garbage dumps—while DBSCAN spatial clustering ensures that the same object viewed from multiple angles is counted exactly once.",
+        capabilities: [
+          { title: "Zero-Shot Detection", description: "Identifies diverse infrastructure elements without the need for training custom models for every new object type." },
+          { title: "Spatial Deduplication", description: "Groups spatially proximate detections (within ~15m) to resolve duplicates across different camera angles." },
+          { title: "Structured Output", description: "Forces the AI to return strict, parseable JSON data, turning unstructured pixels into structured database records." }
+        ],
+        media: { type: 'image', src: '/images/image (2).png', alt: 'Detailed per-location detection results with AI annotations' }
+      },
+      {
+        title: 'The Quality Index',
+        question: "How do we translate raw detection data into a meaningful metric that city officials can act on?",
+        answer: "Data needs context to be useful. I developed a proprietary 'Street Quality Score' (0-100) that synthesizes six distinct infrastructure factors. In the example shown, a score of 53.3/100 reveals a street with moderate issues, providing a granular breakdown of Potholes (25%), Footpaths (20%), and Safety (15%) to pinpoint exactly where interventions are needed.",
+        capabilities: [
+          { title: "Weighted Scoring Algorithm", description: "Calculates a composite score based on Potholes (25%), Footpaths (20%), Lighting (15%), Cleanliness (15%), Safety (15%), and Infrastructure (10%)." },
+          { title: "Granular Breakdown", description: "Provides specific sub-scores for each category, allowing officials to pinpoint exactly why a street is failing." },
+          { title: "Automated Annotation", description: "Generates visual proof by overlaying color-coded bounding boxes on the original imagery for immediate verification." }
+        ],
+        media: { type: 'image', src: '/images/image (1).png', alt: 'Aggregated analysis results with quality score and breakdown' }
+      }
+    ]
   }
 ];
 
@@ -316,6 +366,18 @@ const PUBLICATIONS_DATA: Publication[] = [
     link: "https://www.tu.berlin/en/isr/klab/news-details/labor-k-x-national-institute-of-technology-tiruchirappalli-indien",
     status: "Published",
     summary: "As the primary author, I investigated the impact of urban tree density on temperature and oxygen levels in Berlin using open-source data. This study quantifies the ecological benefits of urban trees and presents the findings interactively to improve public engagement in urban environmental management."
+  }
+];
+
+const TALKS_DATA: Talk[] = [
+  {
+    title: "Empowering Pune with Open Tree Data: A Data-Driven Dashboard",
+    event: "IndiaFOSS 2025",
+    year: "2025",
+    description: "A lightning talk introducing the Pune Urban Tree Dashboard, demonstrating how open data (Tree Census, Satellite LST) and FOSS tools can be leveraged for climate-resilient urban planning.",
+    videoUrl: "https://www.youtube.com/watch?v=hYl3yrLU9-k",
+    eventUrl: "https://fossunited.org/c/indiafoss/2025/cfp/3eq4a6qhhi",
+    tags: ["Open Data", "Climate Tech"]
   }
 ];
 
@@ -357,6 +419,12 @@ const CIVIC_PROJECTS_DATA: CivicProject[] = [
 ];
 
 const ACCOLADES_DATA: Accolade[] = [
+  {
+    year: "2025",
+    title: "Henry Gissenbier Memorial Award",
+    institution: "Junior Chamber International (JCI) India",
+    description: "Honored as an 'Eco Friendly Environmentalist' for outstanding contributions to water and soil conservation, recognizing innovative practices that have inspired communities to adopt sustainable land management."
+  },
   {
     year: "2025",
     title: "Millennium Fellowship & Campus Director",
@@ -534,8 +602,8 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
                       ))}
                     </div>
                     <div className={index % 2 === 0 ? 'lg:order-2' : 'lg:order-1'}>
-                      {section.media.type === 'video' && typeof section.media.src === 'string' && (
-                        section.media.src.includes('youtube.com') ? (
+                      {(section.media.type === 'video' || section.media.type === 'image') && typeof section.media.src === 'string' && (
+                        section.media.type === 'video' && section.media.src.includes('youtube.com') ? (
                           <div className="responsive-video-wrapper keynote-media-wrapper">
                             <iframe src={section.media.src} title={section.media.alt as string} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                           </div>
@@ -632,6 +700,24 @@ function App() {
   const [activeCivicProject, setActiveCivicProject] = useState<CivicProject | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedRole, setExpandedRole] = useState<number | null>(null);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -691,6 +777,7 @@ function App() {
                   <button onClick={() => scrollToSection('research')} className="nav-dropdown-link">Featured Research</button>
                   <button onClick={() => scrollToSection('civic-impact')} className="nav-dropdown-link">Civic Impact</button>
                   <button onClick={() => scrollToSection('publications')} className="nav-dropdown-link">Publications</button>
+                  <button onClick={() => scrollToSection('talks')} className="nav-dropdown-link">Talks</button>
                 </div>
               </div>
               <div className="relative group">
@@ -729,6 +816,7 @@ function App() {
             <div className="flex flex-col items-center space-y-6 text-xl">
               <button onClick={() => scrollToSection('research')} className="text-slate-300 hover:text-amber-500">Featured Research</button>
               <button onClick={() => scrollToSection('civic-impact')} className="text-slate-300 hover:text-amber-500">Civic Impact</button>
+              <button onClick={() => scrollToSection('talks')} className="text-slate-300 hover:text-amber-500">Talks</button>
               <button onClick={() => scrollToSection('publications')} className="text-slate-300 hover:text-amber-500">Publications</button>
               <button onClick={() => scrollToSection('accolades')} className="text-slate-300 hover:text-amber-500">Accolades</button>
               <button onClick={() => scrollToSection('foundation')} className="text-slate-300 hover:text-amber-500">Foundation</button>
@@ -741,7 +829,15 @@ function App() {
         <section id="hero" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-slate-100 mb-4 font-normal leading-tight">Kaushik Ravi</h1>
-            <h2 className="text-lg sm:text-xl lg:text-2xl font-serif text-slate-300 mb-6 sm:mb-8 font-normal leading-relaxed">Civic Technologist & Urban Systems Researcher</h2>
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-serif text-slate-300 mb-4 sm:mb-6 font-normal leading-relaxed">Civic Technologist & Urban Systems Researcher</h2>
+            
+            <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
+              {['Urban Computing', 'Human-Computer Interaction', 'Geospatial Analysis', 'Civic Technology', 'AI for Social Good'].map((keyword) => (
+                <span key={keyword} className="px-3 py-1 bg-slate-800 text-slate-300 text-xs sm:text-sm rounded-full border border-slate-700">
+                  {keyword}
+                </span>
+              ))}
+            </div>
 
             <div className="prose prose-base sm:prose-lg max-w-none text-slate-300 mb-8 sm:mb-12 leading-relaxed">
               <p className="mb-4 sm:mb-6">
@@ -959,20 +1055,60 @@ function App() {
               </div>
             </div>
 
-            {/* Project 5: Berlin Case Study */}
+            {/* Project 5: StreetLens */}
+            <div
+              onClick={() => setActiveProject(PROJECTS_DATA.find(p => p.id === 'streetlens')!)}
+              className="group relative cursor-pointer mb-12 sm:mb-16 lg:mb-20"
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                <div className="order-2 lg:order-1">
+                  <img
+                    src="/images/Streetlens.png"
+                    alt="StreetLens AI Analysis Interface"
+                    className="w-full rounded-lg border border-slate-700 aspect-video object-cover"
+                  />
+                </div>
+                <div className="order-1 lg:order-2">
+                  <div className="text-xs uppercase tracking-wider text-amber-500 mb-2 sm:mb-3">AI & Urban Infrastructure</div>
+                  <h3 className="text-xl sm:text-2xl font-serif text-slate-100 mb-3 sm:mb-4">StreetLens: A Digital Street Audit</h3>
+                  <p className="text-slate-400 mb-4 sm:mb-6 leading-relaxed">
+                    What if we could audit the quality of every street in a city without stepping outside? StreetLens is an AI-powered system that transforms Google Street View imagery into a comprehensive infrastructure audit. By combining computer vision with spatial intelligence, it automatically assesses everything from potholes to streetlights, generating a standardized 'Street Quality Score' for any location on the map.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
+                    {['Vision Language Models', 'Geospatial Analysis', 'DBSCAN Clustering', 'Automated Auditing'].map((tag) => (
+                      <span key={tag} className="px-2 sm:px-3 py-1 bg-slate-800 text-slate-300 text-xs sm:text-sm rounded-full">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="bg-slate-800/50 p-4 rounded-lg">
+                    <div className="text-xl sm:text-2xl font-semibold text-amber-500 mb-1">25m</div>
+                    <div className="text-xs sm:text-sm text-slate-400">Granular sampling resolution for city-wide audits</div>
+                  </div>
+                  <div className="mt-6 md:hidden">
+                    <div className="inline-block px-4 py-2 border border-slate-200 text-slate-200 font-medium text-sm rounded-md">View Project</div>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute inset-0 bg-slate-900/70 opacity-0 group-hover:opacity-100 md:flex items-center justify-center transition-opacity duration-300 rounded-lg hidden">
+                <span className="px-6 py-3 border-2 border-slate-200 text-slate-200 font-medium text-lg">View Project</span>
+              </div>
+            </div>
+
+            {/* Project 6: Berlin Case Study */}
             <div
               onClick={() => setActiveProject(PROJECTS_DATA.find(p => p.id === 'berlin-case-study')!)}
               className="group relative cursor-pointer"
             >
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                <div className="order-2 lg:order-1">
+                <div className="order-1 lg:order-2">
                   <img
                     src="/images/Product 4 Title Image.jpeg"
                     alt="Visualization of Berlin's urban forest data"
                     className="w-full rounded-lg border border-slate-700 aspect-video object-cover"
                   />
                 </div>
-                <div className="order-1 lg:order-2">
+                <div className="order-2 lg:order-1">
                   <div className="text-xs uppercase tracking-wider text-amber-500 mb-2 sm:mb-3">Academic Research & Data Visualization</div>
                   <h3 className="text-xl sm:text-2xl font-serif text-slate-100 mb-3 sm:mb-4">Urban Tree Intelligence: A Berlin Case Study</h3>
                   <p className="text-slate-400 mb-4 sm:mb-6 leading-relaxed">
@@ -1051,6 +1187,53 @@ function App() {
                   <blockquote className="text-slate-400 text-xs sm:text-sm bg-slate-800/50 p-3 sm:p-4 rounded border-l-2 border-slate-700 italic leading-relaxed">
                     {pub.summary}
                   </blockquote>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Talks & Conferences */}
+        <section id="talks" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-serif text-slate-100 mb-8 sm:mb-12">Talks & Conferences</h2>
+            <div className="grid gap-8">
+              {TALKS_DATA.map((talk, index) => (
+                <div key={index} className="group relative bg-slate-800/30 rounded-lg border border-slate-800 hover:border-slate-700 transition-all overflow-hidden">
+                  <div className="p-6 sm:p-8">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+                      <div>
+                        <div className="text-amber-500 text-sm font-medium mb-1">{talk.event} • {talk.year}</div>
+                        <h3 className="text-xl sm:text-2xl font-serif text-slate-100 mb-2">{talk.title}</h3>
+                      </div>
+                    </div>
+
+                    <p className="text-slate-400 mb-6 leading-relaxed">{talk.description}</p>
+
+                    {/* Embedded Video */}
+                    <div className="mb-6 rounded-lg overflow-hidden border border-slate-700 bg-slate-900">
+                      <iframe 
+                        src={talk.videoUrl.replace('watch?v=', 'embed/')} 
+                        title={talk.title}
+                        className="w-full aspect-video" 
+                        frameBorder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowFullScreen
+                      ></iframe>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-4">
+                      <a
+                        href={talk.eventUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-slate-300 hover:text-amber-500 transition-colors text-sm font-medium"
+                      >
+                        <ExternalLink size={16} />
+                        Event Details
+                      </a>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -1169,6 +1352,14 @@ function App() {
                 <Github size={20} />
                 <span>GitHub</span>
               </a>
+              <a
+                href="https://orcid.org/0009-0009-5015-7464"
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center space-x-2 text-slate-400 hover:text-amber-500 transition-colors"
+              >
+                <BookOpen size={20} />
+                <span>ORCID</span>
+              </a>
             </div>
           </div>
         </section>
@@ -1177,11 +1368,23 @@ function App() {
         <footer className="py-6 sm:py-8 px-4 sm:px-6 border-t border-slate-800 text-center">
           <div className="max-w-4xl mx-auto">
             <p className="text-slate-500 text-xs sm:text-sm">
-              © 2025 Kaushik Ravi. All rights reserved.
+              © 2026 Kaushik Ravi. All rights reserved.
             </p>
           </div>
         </footer>
       </div>
+
+      {/* Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 p-3 bg-amber-500 text-slate-900 rounded-full shadow-lg hover:bg-amber-400 transition-all duration-300 z-50"
+          aria-label="Back to top"
+        >
+          <ArrowUp size={24} />
+        </button>
+      )}
+
       {activeProject && <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />}
       <CivicProjectModal project={activeCivicProject} onClose={() => setActiveCivicProject(null)} />
     </>
